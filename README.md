@@ -1,0 +1,4 @@
+emailr
+======
+
+automatic emailing client

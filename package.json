@@ -13,6 +13,8 @@
     "body-parser": "~1.0.0",
     "debug": "~0.7.4",
     "jade": "~1.3.0",
-    "stylus": "0.42.3"
+    "stylus": "0.42.3",
+    "mongoose": "~3.8.14",
+    "underscore": "~1.6.0"
   }
 }

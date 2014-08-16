@@ -1,3 +1,6 @@
+# Sensitive Data
+/src/connection.js
+
 # Logs
 logs
 *.log

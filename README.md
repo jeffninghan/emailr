@@ -1,64 +1,21 @@
 emailr
 ======
 
-automatic emailing client
+Emails friends messages from custom templates ever set interval.
 
-'/:id/createTemplate'
+Currently, you will need a mongohq account for this to work. Create a free account with a sandbox instance named 'emailr'. After cloning this git repository, create a file called connection.js in the '/src' folder that contains:
+```
+/src/connection.js
 
-'/:id/editTemplate/:templateId'
+module.exports = { 	
+	mongo: 'mongodb://<user>:<password>@<mongoaddress>:<port>/emailr'
+}
+```
+Then, just navigate to the root emailr folder (where app.js resides) and type:
+```
+$npm start
+```
 
-'/:id/deleteTemplate/:templateId'
+Don't forget to install all the depenencies with '$npm install'.
 
-'/:id/createContact'
-
-'/:id/deleteContact/:contactId'
-
-'/:id/getEmails'
-
-'/:id/getContacts'
-
-'/:id/getTemplates'
-
-Account
-	  	email: { type: String, required: true},
-	  	password: { type: String, required: true},
-	  	name: { type: String, required: false},
-	  	dateCreated: { type: Date, default: Date.now }
-
-Template
-		owner: { type: Object, required: true},
-		recipients: [{type: String, required: false}], //ObjectIds
-		messages: { type: Object, required: true},
-			{
-				subjects: [type: String],
-				greetings: [type: String],
-				messages: [type: String],
-				signatures: [type: String]
-			}
-
-		interval: { type: Object, required: true},
-			{
-				repeat: Boolean,
-				interval: Integer (in seconds)
-			}
-		dateCreated: { type: Date, default: Date.now }
-		dateLastSent: { type: Date, default: Date.now }
-
-Contact
-		owner: {type: Object, required: true},
-		name: { type: String, required: true},
-		email: { type: String, required: true},
-		dateCreated: { type: Date, default: Date.now }
-
-Email
-		sender: { type: Object, required: true},
-		recipient: { type: Object, required: true},
-		subject: { type: String, required: true},
-		message: { type: String, required: true},
-		date: { type: Date, default: Date.now }
-
-TODO
-handle account email duplicates
-handle password retrieval (if forgot)
-error routes
-password protection
+Go to localhost:3000/ in a browser and get started!

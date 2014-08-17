@@ -93,7 +93,7 @@ router.get('/createContact', function(req, res) {
 })
 
 router.get('/createTemplate', function(req, res) {
-	res.render('createtemplate')
+	res.render('createtemplate', {contacts: req.session.contacts})
 })
 
 router.get('/logout', function(req, res) {

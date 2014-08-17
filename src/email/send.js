@@ -35,12 +35,18 @@ var checkEmails = function(temp, cbk2) {
 			})
 		})
 	}
+	else {
+		return cbk2();
+	}
 }
 
 var sendEmail = function(template, cbk3) {
 
 	var emailer = function(recipient, cbk4) {
 		contact.findOneById(recipient, function(err, contact) {
+			if (!contact) {
+				return cbk4(err)
+			}
 			var message = template.messages.messages[Math.floor(Math.random() * template.messages.messages.length)]
 			var subject = template.messages.subjects[Math.floor(Math.random() * template.messages.subjects.length)]
 			var greeting = template.messages.greetings[Math.floor(Math.random() * template.messages.greetings.length)]
@@ -70,8 +76,7 @@ var sendEmail = function(template, cbk3) {
         				pass: template.owner.password
     				}
 			});
-			console.log('sending email to: ')
-			console.log(recipientEmail)
+			console.log('sending email to: ' + recipientEmail)
 			smtpTransport.sendMail(mailOptions, function(err) {
 				email.create(template.owner, contact, subject, fullMessage, function(err, m) {
 					return cbk4(err);

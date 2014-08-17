@@ -22,16 +22,34 @@ router.post('/', function(req, res) {
 ///////////////////////////////////////////////////////////////////////////////
 router.post('/createTemplate', function(req, res) {
 	var id = String(req.session.account._id);
-	var recipients = req.body.recipients // sent as JSON.stringify
-	var name = req.body.name
-	var messages = req.body.messages
-	var interval = req.body.interval
+	var inputs = formatTemplateResponse(req.body)
+	var recipients = inputs.recipients //req.body.recipients // sent as JSON.stringify
+	var name = inputs.name //req.body.name || 'no name';
+	var messages = inputs.messages //req.body.messages
+	var time = inputs.interval
+	var interval = {interval: time, repeat: false} //req.body.interval
+
 	account.findOneById(id, function(err, account) {
 		if (err || (!account)) {
 			return res.send({success: false, error: err, message: 'Unable to create template.'})
 		}
 		template.create(account, name, recipients, messages, interval, function(err, template) {
 			req.session.templates.push(template)
+			return res.redirect('/')
+		})
+	})
+})
+
+router.post('/toggleTemplate/:templateId', function(req, res) {
+	var templateId = req.params.templateId
+	template.findOneById(templateId, function(err, template) {
+		if (err || !template) {
+			return res.send({success: false, error: 'Unable to toggle template.'})
+		}
+		template.interval = {repeat: !template.interval.repeat, interval: template.interval.interval}
+		var idx = findElementIndexById(req.session.templates, templateId)
+		req.session.templates[idx].interval.repeat = template.interval.repeat
+		template.save(function(err) {
 			return res.redirect('/')
 		})
 	})
@@ -108,10 +126,78 @@ router.post('/deleteContact/:contactId', function(req, res) {
 			return res.send({success: false, error: err, message: 'Unable to delete contact.'})
 		}
 		contact.remove(function(err) {
-			//req.session.contacts.pop()
+			var idx = findElementIndexById(req.session.contacts, contactId)
+			req.session.contacts.splice(idx, 1); //[idx].interval.repeat = template.interval.repeat
 			return res.redirect('/')
 		})
 	})
 })
+
+var formatTemplateResponse = function(body) {
+	var keys = Object.keys(body)
+	var template = {}
+	var messages = {}
+	var recipients = []
+	var name = 'no name'
+	var interval = 0
+	for (var key in body) {
+		if (key.indexOf('contactId-') == 0) {
+			var id = key.replace('contactId-', '')
+			recipients.push(id)
+		}
+		else if (key === 'name') {
+			name = body[key]
+		}
+		else if (key === 'interval') {
+			interval = body[key]
+		}
+		else {
+			messages[key] = stringToArray(body[key]) //.split(',')
+		}
+	}
+	template['messages'] = messages
+	template['recipients'] = recipients
+	template['name'] = name
+	template['interval'] = getSeconds(interval)
+	console.log(template)
+	return template;
+}
+
+var getSeconds = function(interval) {
+	var time = interval.toLowerCase()
+	var time = time.trim()
+	switch(time) {
+	    // case 'now':
+	    //     return 0
+	    case 'hour':
+	        return 60 * 60
+	    case 'day':
+	    	return 60 * 60 * 24
+	    case 'week':
+	    	return 60 * 60 * 24 * 7
+	    case 'month':
+	    	return 60 * 60 * 24 * 30
+	    case 'year':
+	    	return 60 * 60 * 24 * 365
+	    default:
+	        return 100000000000000
+	}
+}
+
+var stringToArray = function(str) {
+	var arr = str.split(',')
+	for (var i = 0; i < arr.length; i ++) {
+		arr[i] = arr[i].trim()
+	}
+	return arr
+}
+
+var findElementIndexById = function(arr, id) {
+	for (var i = 0; i < arr.length; i ++) {
+		if (arr[i]._id == id) {
+			return i
+		}
+	}
+}
 
 module.exports = router;

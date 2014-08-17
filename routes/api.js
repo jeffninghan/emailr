@@ -42,7 +42,7 @@ router.post('/:id/editTemplate/:templateId', function(req, res) {
 	var recipients = req.body.recipients
 	var name = req.body.name
 	var messages = req.body.messages
-	var interval = req.body.interval;	
+	var interval = JSON.parse(req.body.interval);	
 	template.findOneById(templateId, function(err, template) {
 		if (err || !template || (template.owner._id != id)) {
 			return res.send({success: false, error: 'Unable to edit template.'})

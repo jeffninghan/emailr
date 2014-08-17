@@ -72,7 +72,9 @@ app.use(function(err, req, res, next) {
 
 // check every 10 seconds for emails to send
 setInterval(function(){
+    console.log('checking for emails to send')
     send.execute(function(err) {
+        console.log('finished checking emails')
         return;
     })
 }, 10000);

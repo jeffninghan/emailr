@@ -1,8 +1,9 @@
 var Template = require('../document/template');
 
-exports.create = function(owner, recipients, messages, interval, cbk) {
+exports.create = function(owner, name, recipients, messages, interval, cbk) {
 	var template = new Template(
 		{	owner: owner,
+			name: name,
 			recipients: recipients,
 			messages: messages,
 			interval: interval

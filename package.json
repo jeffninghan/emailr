@@ -18,6 +18,8 @@
     "underscore": "~1.6.0",
     "password-hash": "~1.2.2",
     "async": "~0.9.0",
-    "nodemailer": "~0.6.5"
+    "nodemailer": "~0.6.5",
+    "express-sessions": "~1.0.5",
+    "express-session": "~1.7.5"
   }
 }

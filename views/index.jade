@@ -1,5 +1,52 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	h1= title
+	h5 #{message}
+	p
+
+	table.table.table-striped
+		h3 Contacts
+		a(href='/createContact' class='btn btn-default') Add Contact 
+
+		thead
+			tr
+				th Name
+				th Email
+		tbody		
+		each contact in contacts
+			tr
+				td #{contact.name}
+				td #{contact.email}
+
+	table.table.table-striped
+		h3 Templates 
+		a(href='/createTemplate' class='btn btn-default') Add Template
+
+		thead
+			tr
+				th Name
+				th Interval (sec)
+				th Repeat
+		tbody		
+		each template in templates
+			tr
+				td #{template.name}
+				td #{template.interval.interval} 
+				td #{template.interval.repeat}
+
+	table.table.table-striped
+		h3 Sent Emails
+		thead
+			tr
+				th Recipient
+				th Subject
+				th Date
+		tbody		
+		each email in emails
+			tr
+				td #{email.recipient.name}
+				td #{email.subject}
+				td #{email.dateSent}
+
+	a(href='/logout' class='btn btn-danger') Log out

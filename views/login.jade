@@ -1,0 +1,14 @@
+extends layout
+ 
+block content
+  h1 Emailr
+  div.top
+    form.form-horizontal(action='/login' method="post", id="loginForm")
+      label Email
+      input.span3(id="email", type="text", name="email")
+      label Password
+      input.span3(id="password", type="password", name="password")
+      input.btn(type="submit", value="Log In")
+  div.container
+  a(href='/signup') No account? Sign up!
+  div.footer

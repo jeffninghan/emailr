@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var template = new mongoose.Schema(
 	{
 		owner: { type: Object, required: true},
+		name: { type:String, require:true},
 		recipients: [{type: String, required: false}],
 		messages: { type: Object, required: true},
 		interval: { type: Object, required: true},

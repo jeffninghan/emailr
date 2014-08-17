@@ -1,0 +1,13 @@
+extends layout
+ 
+block content
+  h1 Create Template
+  div.top
+    form.form-horizontal(action='/methods/createTemplate' method="post", id="createContactForm")
+      label Name
+      input.span3(id="name", type="text", name="name")
+
+      input.btn(type="submit", value="Create")
+  div.container
+  a(href='/' class='btn btn-danger') Back
+  div.footer

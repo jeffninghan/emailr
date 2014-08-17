@@ -56,3 +56,9 @@ Email
 		subject: { type: String, required: true},
 		message: { type: String, required: true},
 		date: { type: Date, default: Date.now }
+
+TODO
+handle account email duplicates
+handle password retrieval (if forgot)
+error routes
+password protection

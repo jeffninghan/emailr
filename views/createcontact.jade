@@ -1,0 +1,16 @@
+extends layout
+ 
+block content
+  h1 Add Contact
+  div.top
+    form.form-horizontal(action='/methods/createContact' method="post", id="createContactForm")
+      label Name
+      input.span3(id="name", type="text", name="name")
+      label Email
+      input.span3(id="email", type="text", name="email")
+      input.btn(type="submit", value="Add")
+  div.container
+  a(href='/' class='btn btn-danger') Back
+  div.footer
+
+

@@ -17,11 +17,11 @@ router.post('/', function(req, res) {
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//                     API Template Routes
+//                     Template Routes
 //
 ///////////////////////////////////////////////////////////////////////////////
-router.post('/:id/createTemplate', function(req, res) {
-	var id = req.params.id;
+router.post('/createTemplate', function(req, res) {
+	var id = String(req.session.account._id);
 	var recipients = req.body.recipients // sent as JSON.stringify
 	var name = req.body.name
 	var messages = req.body.messages
@@ -31,13 +31,14 @@ router.post('/:id/createTemplate', function(req, res) {
 			return res.send({success: false, error: err, message: 'Unable to create template.'})
 		}
 		template.create(account, name, recipients, messages, interval, function(err, template) {
-			return res.send({success: true, template: template});
+			req.session.templates.push(template)
+			return res.redirect('/')
 		})
 	})
 })
 
-router.post('/:id/editTemplate/:templateId', function(req, res) {
-	var id = req.params.id;
+router.post('/editTemplate/:templateId', function(req, res) {
+	var id = String(req.session.account._id);
 	var templateId = req.params.templateId;
 	var recipients = req.body.recipients
 	var name = req.body.name
@@ -60,8 +61,8 @@ router.post('/:id/editTemplate/:templateId', function(req, res) {
 	})
 })
 
-router.post('/:id/deleteTemplate/:templateId', function(req, res) {
-	var id = req.params.id;
+router.post('/deleteTemplate/:templateId', function(req, res) {
+	var id = String(req.session.account._id);
 	var templateId = req.params.templateId;
 	template.findOneById(templateId, function(err, template) {
 		if (err || !template || (template.owner._id != id)) {
@@ -78,11 +79,11 @@ router.post('/:id/deleteTemplate/:templateId', function(req, res) {
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//                     API Contact Routes
+//                     Contact Routes
 //
 ///////////////////////////////////////////////////////////////////////////////
-router.post('/:id/createContact', function(req, res) {
-	var id = req.params.id;
+router.post('/createContact', function(req, res) {
+	var id = String(req.session.account._id);
 	var name = req.body.name;
 	var email = req.body.email;
 	account.findOneById(id, function(err, account) {
@@ -93,58 +94,23 @@ router.post('/:id/createContact', function(req, res) {
 			if (err) {
 				return res.send({success: false, error: err, message: 'Unale to create contact.'})
 			}
-			return res.send({success: true, contact: contact})
+			req.session.contacts.push(contact)
+			return res.redirect('/')
 		})
 	})
 })
 
-router.post('/:id/deleteContact/:contactId', function(req, res) {
-	var id = req.params.id;
+router.post('/deleteContact/:contactId', function(req, res) {
+	var id = String(req.session.account._id);
 	var contactId = req.params.contactId
 	contact.findOneById(contactId, function(err, contact) {
 		if (err || !contact) {
 			return res.send({success: false, error: err, message: 'Unable to delete contact.'})
 		}
 		contact.remove(function(err) {
-			return res.send({success:true, contact: contact})
+			//req.session.contacts.pop()
+			return res.redirect('/')
 		})
-	})
-})
-
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//                     API Getter Routes
-//
-///////////////////////////////////////////////////////////////////////////////
-
-router.get('/:id/getEmails', function(req, res) {
-	var id = req.params.id
-	email.findAllBySenderId(id, function(err, emails) {
-		if (err) {
-			return res.send({success: false, error: err, message: 'Unable to get emails.'})
-		}
-		return res.send({success:true, emails: emails});
-	})
-})
-
-router.get('/:id/getContacts', function(req, res) {
-	var id = req.params.id
-	contact.findAllByOwnerId(id, function(err, contacts) {
-		if (err) {
-			return res.send({success: false, error: err, message: 'Unable to get contacts.'})
-		}
-		return res.send({success:true, contacts: contacts})
-	})
-})
-
-router.get('/:id/getTemplates', function(req, res) {
-	var id = req.params.id
-	template.findAllByOwnerId(id, function(err, templates) {
-		if (err) {
-			return res.send({success: false, error: err, message: 'Unable to get templates.'})
-		}
-		return res.send({success:true, templates: templates})
 	})
 })
 

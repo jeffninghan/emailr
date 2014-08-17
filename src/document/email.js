@@ -6,7 +6,7 @@ var email = new mongoose.Schema(
 		recipient: { type: Object, required: true},
 		subject: { type: String, required: true},
 		message: { type: String, required: true},
-		date: { type: Date, default: Date.now }
+		dateSent: { type: Date, default: Date.now }
 	}
 );
 

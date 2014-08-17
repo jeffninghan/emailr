@@ -6,7 +6,8 @@ var template = new mongoose.Schema(
 		recipients: [{type: String, required: false}],
 		messages: { type: Object, required: true},
 		interval: { type: Object, required: true},
-		date: { type: Date, default: Date.now }
+		dateCreated: { type: Date, default: Date.now },
+		dateLastSent: { type: Date, default: Date.now },
 	}
 );
 

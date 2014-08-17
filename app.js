@@ -9,6 +9,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api');
 var login = require('./routes/login')
+var send = require('./src/email/send')
 
 var app = express();
 
@@ -66,5 +67,12 @@ app.use(function(err, req, res, next) {
         }
     );
 });
+
+// check every 10 seconds for emails to send
+setInterval(function(){
+    send.execute(function(err) {
+        return;
+    })
+}, 10000);
 
 module.exports = app;

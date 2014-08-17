@@ -24,3 +24,9 @@ exports.findOneByEmail = function(email, cbk) {
 		return cbk(err, account)
 	})
 }
+
+exports.findAll = function(cbk) {
+	Account.find({}).exec(function(err, accounts) {
+		return cbk(err, accounts)
+	})
+}

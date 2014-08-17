@@ -78,12 +78,14 @@ router.post('/signup', function(req, res) {
 	var name = req.body.name;
 	var email = req.body.email;
 	var password = req.body.password;  // this is hashed!!
-	Account.create(email, password, name, function(err, account) {
+	account.create(email, password, name, function(err, account) {
 		if (err || !account) {
 			return res.send(err)
 		}
 		req.session.account = account
-
+		req.session.contacts = []
+		req.session.emails = []
+		req.session.templates = []
 		res.redirect('/')
 	})
 })

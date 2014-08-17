@@ -13,8 +13,8 @@ exports.create = function(email, password, name, cbk) {
 	})
 }
 
-exports.findById = function(id, cbk) {
-	Account.find({_id: id}).exec(function(err, account) {
+exports.findOneById = function(id, cbk) {
+	Account.findOne({_id: id}).exec(function(err, account) {
 		return cbk(err, account)
 	})
 }

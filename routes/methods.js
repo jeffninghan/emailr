@@ -90,7 +90,9 @@ router.post('/deleteTemplate/:templateId', function(req, res) {
 			if (err) {
 				return res.send({success: false, error: err, message: 'Error deleting template'})
 			}
-			return res.send({success: true, template: template})
+			var idx = findElementIndexById(req.session.templates, templateId)
+			req.session.templates.splice(idx, 1);
+			return res.redirect('/') //res.send({success: true, template: template})
 		})
 	})
 })

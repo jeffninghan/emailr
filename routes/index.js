@@ -98,6 +98,28 @@ router.get('/createTemplate', function(req, res) {
 	res.render('createtemplate', {contacts: req.session.contacts})
 })
 
+router.get('/viewTemplate/:templateId', function(req, res) {
+	var templateId = req.params.templateId
+	var contacts = []
+	template.findOneById(templateId, function(err, template) {
+		async.forEachSeries(template.recipients, getContact, function(err) {
+			res.render('viewtemplate', {template: template, contacts: contacts})
+		})
+	})
+
+	var getContact = function(id, cbk) {
+		contact.findOneById(id, function(err, c) {
+			if (c) {
+				contacts.push(c)
+			}
+			else {
+				// remove contact from template
+			}
+			return cbk(null, contacts);
+		})
+	}
+})
+
 router.get('/logout', function(req, res) {
     req.session.destroy(function(){
         res.redirect('/')

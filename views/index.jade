@@ -38,7 +38,8 @@ block content
 			tbody		
 			each template in templates
 				tr
-					td #{template.name}
+					td 
+						a(href='/viewTemplate/' + template._id) #{template.name}
 					td #{template.interval.interval} 
 					td #{template.interval.repeat}
 					if !template.interval.repeat

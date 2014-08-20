@@ -1,0 +1,15 @@
+extends layout
+
+block content
+	h3 Sent to: #{email.recipient.name}  
+	h5 Email: #{email.recipient.email}
+
+	.well.well-sm
+		h5 Subject: #{email.subject}
+	.well.well-lg
+		each m in message
+			h5 #{m}
+
+	h5 #{email.dateSent}
+
+	a(href='/' class="btn btn-danger") Back

@@ -65,7 +65,8 @@ block content
 			tbody		
 			each email in emails
 				tr
-					td #{email.recipient.name}
+					td 
+						a(href='/viewEmail/' + email._id) #{email.recipient.name}
 					td #{email.subject}
 					td #{email.dateSent}
 

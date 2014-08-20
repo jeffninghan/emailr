@@ -123,11 +123,25 @@ router.get('/viewTemplate/:templateId', function(req, res) {
 	}
 })
 
+
+var parseMessage = function(message) {
+	return message.split('\n');
+}
+
+router.get('/viewEmail/:emailId', function(req, res) {
+	var emailId = req.params.emailId
+	email.findOneById(emailId, function(err, email) {
+		var message = parseMessage(email.message)
+		res.render('viewemail', {email: email, message: message})
+	})
+})
+
 router.get('/logout', function(req, res) {
     req.session.destroy(function(){
         res.redirect('/')
     })
 });
+
 
 var encrypt = function(text) {
 	var key = require('../src/secret').key;

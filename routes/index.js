@@ -5,6 +5,7 @@ var contact = require('../src/repository/contact');
 var email = require('../src/repository/email');
 var template = require('../src/repository/template');
 var async = require('async');
+var crypto = require('crypto');
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -27,6 +28,7 @@ router.get('/', function(req, res) {
 router.post('/login', function(req, res) {
 	var _email = req.body.email;
 	var password = req.body.password;  // this is hashed!!
+	password = encrypt(password);
 	account.findOneByEmail(_email, function(err, account) {
 		if (err) {
 			return res.send(err)
@@ -78,6 +80,7 @@ router.post('/signup', function(req, res) {
 	var name = req.body.name;
 	var email = req.body.email;
 	var password = req.body.password;  // this is hashed!!
+	password = encrypt(password);
 	account.create(email, password, name, function(err, account) {
 		if (err || !account) {
 			return res.send(err)
@@ -125,5 +128,13 @@ router.get('/logout', function(req, res) {
         res.redirect('/')
     })
 });
+
+var encrypt = function(text) {
+	var key = require('../src/secret').key;
+	var algorithm = require('../src/secret').algorithm;
+	var cipher = crypto.createCipher(algorithm, key);  
+	var encrypted = cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
+	return encrypted
+}
 
 module.exports = router;

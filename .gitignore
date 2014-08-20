@@ -1,5 +1,6 @@
 # Sensitive Data
 /src/connection.js
+/src/secret.js
 TODO.md
 # Logs
 logs

@@ -4,6 +4,7 @@ var email = require('../repository/email');
 var template = require('../repository/template');
 var async = require('async');
 var nodemailer = require('nodemailer');
+var crypto = require('crypto');
 
 exports.execute = function(cbk) {
 	account.findAll(function(err, accounts) {
@@ -69,11 +70,16 @@ var sendEmail = function(template, cbk3) {
 				text: fullMessage
 			}
 
+			var password = template.owner.password
+			var key = require('../secret').key;
+			var algorithm = require('../secret').algorithm;
+			var decipher = crypto.createDecipher(algorithm, key);
+			password = decipher.update(password, 'hex', 'utf8') + decipher.final('utf8');
 			var smtpTransport = nodemailer.createTransport("SMTP",{
     				service: carrier,
     				auth: {
         				user: senderEmail,
-        				pass: template.owner.password
+        				pass: password
     				}
 			});
 			console.log('sending email to: ' + recipientEmail)

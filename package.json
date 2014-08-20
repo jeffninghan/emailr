@@ -21,6 +21,7 @@
     "nodemailer": "~0.6.5",
     "express-sessions": "~1.0.5",
     "express-session": "~1.7.5",
-    "crypto": "0.0.3"
+    "crypto": "0.0.3",
+    "forever": "~0.11.1"
   }
 }

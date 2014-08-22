@@ -3,6 +3,7 @@ var account = require('../src/repository/account');
 var contact = require('../src/repository/contact');
 var email = require('../src/repository/email');
 var template = require('../src/repository/template');
+var async = require('async');
 
 var router = express.Router();
 
@@ -129,8 +130,27 @@ router.post('/deleteContact/:contactId', function(req, res) {
 		}
 		contact.remove(function(err) {
 			var idx = findElementIndexById(req.session.contacts, contactId)
-			req.session.contacts.splice(idx, 1); //[idx].interval.repeat = template.interval.repeat
-			return res.redirect('/')
+			var deletedContactId = req.session.contacts[idx]._id;
+			req.session.contacts.splice(idx, 1);
+			var templates = req.session.templates;
+
+			var removeContactFromTemplate = function(temp, cbk) {
+				var tempId = temp._id;
+				template.findOneById(tempId, function(err, t) {
+					var i = t.recipients.indexOf(deletedContactId)
+					if (i !== -1) { 
+						t.recipients = t.recipients.splice(i, 1);
+					}
+					t.save(function(err) {
+						return cbk();
+					})
+				})
+			}
+
+			async.forEachSeries(templates, removeContactFromTemplate, function(err) {
+				return res.redirect('/')
+			})
+
 		})
 	})
 })

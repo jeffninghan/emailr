@@ -34,7 +34,7 @@ router.post('/:id/createTemplate', function(req, res) {
 			return res.send({success: true, template: template});
 		})
 	})
-})
+})  
 
 router.post('/:id/editTemplate/:templateId', function(req, res) {
 	var id = req.params.id;

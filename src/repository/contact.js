@@ -37,3 +37,9 @@ exports.findAllByOwnerId = function(id, cbk) {
 		return cbk(err, c)
 	})
 }
+
+exports.findByIds = function(ids, cbk) {
+	Contact.find({_id: { $in: ids} }).exec(function(err, contacts) {
+		return cbk(err, contacts)
+	})
+}

@@ -174,7 +174,7 @@ var formatTemplateResponse = function(body) {
 			interval = body[key]
 		}
 		else {
-			messages[key] = stringToArray(body[key]) //.split(',')
+			messages[key] = stringToArray(body[key])
 		}
 	}
 	template['messages'] = messages

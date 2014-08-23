@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 var api = require('./routes/api');
 var send = require('./src/email/send')
 var methods = require('./routes/methods')
@@ -28,7 +27,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: '1234567890QWERTY', proxy: true}));
 
 app.use('/', routes);
-app.use('/users', users);
 app.use('/api', api);
 app.use('/methods', methods);
 

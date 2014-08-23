@@ -2,6 +2,7 @@ var account = require('../repository/account');
 var contact = require('../repository/contact');
 var email = require('../repository/email');
 var template = require('../repository/template');
+var helpers = require('../helpers');
 var async = require('async');
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
@@ -69,12 +70,7 @@ var sendEmail = function(template, cbk3) {
 				subject: subject,
 				text: fullMessage
 			}
-
-			var password = template.owner.password
-			var key = require('../secret').key;
-			var algorithm = require('../secret').algorithm;
-			var decipher = crypto.createDecipher(algorithm, key);
-			password = decipher.update(password, 'hex', 'utf8') + decipher.final('utf8');
+			var password = helpers.decrypt(template.owner.password)
 			var smtpTransport = nodemailer.createTransport("SMTP",{
     				service: carrier,
     				auth: {

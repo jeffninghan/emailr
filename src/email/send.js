@@ -3,9 +3,49 @@ var contact = require('../repository/contact');
 var email = require('../repository/email');
 var template = require('../repository/template');
 var helpers = require('../helpers');
+var secret = require('../secret');
 var async = require('async');
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
+
+exports.passwordReset = function(email, cbk) {
+	//check ivalid email
+	account.findOneByEmail(email, function(err, account) {
+		if (err || !account) { return cbk({name: 'Invalid Account', message: 'Account does not exist.'}, null)}
+		var newPassword = helpers.generatePassword();
+		account.password = helpers.encrypt(newPassword);
+		account.save(function(err) {
+			if (err) {
+				return cbk(err, null)
+			}
+			var fullMessage = 'Hi ' + account.name + ', \n\n'
+								+ 'Your Emailr password has been reset to: \n\n'
+								+ newPassword + '\n\n'
+								+ 'You can change this password when you login to Emailr. \n\n'
+								+ 'Best Regards, \n\n'
+								+ 'Emailr'
+
+			var mailOptions = {
+					from: secret.email,
+					to: account.email,
+					subject: 'Emailr Password Reset',
+					text: fullMessage
+				}
+			var password = secret.emailPassword
+			var smtpTransport = nodemailer.createTransport("SMTP",{
+    				service: 'gmail',
+    				auth: {
+        				user: secret.email,
+        				pass: password
+    				}
+			});
+			console.log('sending email to: ' + account.email)
+			smtpTransport.sendMail(mailOptions, function(err) {
+				return cbk(err, null)
+			})
+		})
+	})
+}
 
 exports.execute = function(cbk) {
 	account.findAll(function(err, accounts) {

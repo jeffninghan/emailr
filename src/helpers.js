@@ -38,3 +38,7 @@ exports.orderByAttribute = function(arr, attr, order) {
     arr.sort(compare);
     return arr
 }
+
+exports.generatePassword = function() {
+    return  Math.random().toString(36).slice(-8)
+}

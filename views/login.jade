@@ -5,6 +5,9 @@ block content
     | Emailr 
     span.glyphicon.glyphicon-envelope
   br
+  if error
+    .alert.alert-danger
+      strong #{error.name}: #{error.message}
   form(role='form' action='/login' method='post' id='loginForm')
     label(for='email') Email address
     input#email.form-control(placeholder='Enter email', name='email')

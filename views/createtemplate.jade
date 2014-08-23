@@ -1,6 +1,10 @@
 extends layout
  
 block content
+  if error
+    .alert.alert-danger
+      strong #{error.name}: #{error.message}
+      
   h1 Create Template
   div.top
     form(role='form' action='/methods/createTemplate' method='post' id='createContactTemplate')

@@ -10,15 +10,21 @@ var async = require('async');
 /* GET home page. */
 router.get('/', function(req, res) {
 	if (req.session.account) {
-		return res.render('index', 
-			{	title: 'Emailr - all you need to keep up with friends', 
-				message:'Welcome back ' + req.session.account.name,
-				account: req.session.account,
-				contacts: req.session.contacts,
-				emails: req.session.emails,
-				templates: req.session.templates
-			}
-		)
+		getObjects(String(req.session.account._id), function(err, obj) {
+			if (err) { return res.render('index', {error: {name: err.name, message: err.message}}) }
+			req.session.contacts = obj.contacts
+			req.session.emails = obj.emails
+			req.session.templates = obj.templates
+			return res.render('index', 
+				{	title: 'Emailr - all you need to keep up with friends', 
+					message:'Welcome back ' + req.session.account.name,
+					account: req.session.account,
+					contacts: req.session.contacts,
+					emails: req.session.emails,
+					templates: req.session.templates
+				}
+			)
+		})
 	}
 	else {
 		res.render('login');
@@ -34,37 +40,25 @@ router.post('/login', function(req, res) {
 			return res.send(err)
 		}
 		if (!account) {
-			return res.send({success: false, error: 'Email does not exists.'})
+			return res.render('login', {error: {name: 'Invalid Login', message: "Account does not exist."}})
 		}
 		var valid = (account.password === password)
 		if (valid) {
 			req.session.account = account
 			var id = String(account._id)
-			async.waterfall([
-			    function(cbk){
-			    	contact.findAllByOwnerId(id, function(err, contacts) {
-			    		req.session.contacts = contacts;
-			    		cbk(null)
-			    	})
-			    },
-			    function(cbk){
-				    template.findAllByOwnerId(id, function(err, templates) {
-				    	req.session.templates = templates
-				    	cbk(null)
-				    })
-			    },
-			    function(cbk){
-			        email.findAllBySenderId(id, function(err, emails) {
-			        	req.session.emails = emails
-			        	cbk(null)
-			        })
-			    }
-			], function (err, result) {
-			   res.redirect('/')   
-			});			
+			getObjects(id, function(err, obj) {
+				if (err) {
+					return res.render('login', {error: {name: err.name, message: err.message}})
+				}
+				req.session.contacts = obj.contacts
+				req.session.templates = obj.templates
+				req.session.emails = obj.emails
+				return res.redirect('/') 
+
+			})		
 		}
 		else {
-			return res.send({success:false, error: "Email/password combination is incorrect."})
+			return res.render('login', {error: {name:'Invalid Login', message: "Email/password combination is incorrect."}})
 		}
 	})
 })
@@ -73,28 +67,36 @@ router.get('/signup', function(req, res) {
 	res.render('signup')
 })
 
-//x-www-form-urlencoded data
 router.post('/signup', function(req, res) {
 	var name = req.body.name;
 	var email = req.body.email;
-	var password = req.body.password;  // this is hashed!!
+	var password = req.body.password;
+	if (!name || !email || !password) {
+		return res.render('signup', {error: {name: 'Invalid Input', message: 'Input fields are missing.'}})
+	}
 	password = helpers.encrypt(password);
 	if (!helpers.checkEmailFormat(email)) {
-		return res.render('signup', {error: 'Invalid email'})
+		return res.render('signup', {error: {name:'Invalid Input', message:"Email is incorrectly formatted."}})
 	}
-	account.findOneByEmail(email, function(err, a) {
-		if (a) {
-			return res.render('signup', {error: 'Email already in use'})
+	account.findOneByEmail(email, function(err, acc) {
+		if (err) {
+			return res.render('signup', {error: {name: err.name, message: err.message}})
+		}
+		if (acc) {
+			return res.render('signup', {error: {name: "Invalid Input", message:'Email already in use.'}})
 		}
 		account.create(email, password, name, function(err, account) {
-			if (err || !account) {
-				return res.send(err)
+			if (err) {
+				return res.render('signup', {error: {name: err.name, message: err.message}})
+			}
+			if (!account) {
+				return res.render('signup', {error: {name: 'Account Failure', message: 'Unable to create account.'}})
 			}
 			req.session.account = account
 			req.session.contacts = []
 			req.session.emails = []
 			req.session.templates = []
-			res.redirect('/')
+			return res.redirect('/')
 		})
 	})
 })
@@ -110,8 +112,17 @@ router.get('/createTemplate', function(req, res) {
 router.get('/viewTemplate/:templateId', function(req, res) {
 	var templateId = req.params.templateId
 	template.findOneById(templateId, function(err, template) {
+		if (err) {
+			return res.render('viewtemplate', {error: {name: err.name, message: err.message}})
+		}
+		if (!template) {
+			return res.render('viewtemplate', {error: {name: 'Invalid Template', message: 'Unable to find template.'}})
+		}
 		contact.findByIds(template.recipients, function(err, contacts) {
-			res.render('viewtemplate', {template: template, contacts: contacts})
+			if (err) {
+				return res.render('viewtemplate', {error: {name: err.name, message: err.message}})
+			}
+			res.render('viewtemplate', {template: template, contacts: contacts || []})
 		})
 	})
 })
@@ -119,15 +130,47 @@ router.get('/viewTemplate/:templateId', function(req, res) {
 router.get('/viewEmail/:emailId', function(req, res) {
 	var emailId = req.params.emailId
 	email.findOneById(emailId, function(err, email) {
+		if (err) {
+			return res.render('viewemail', {error: {name: err.name, message: err.message}})
+		}
+		if (!template) {
+			return res.render('viewemail', {error: {name: 'Invalid Email', message: 'Unable to find email.'}})
+		}
 		var message = helpers.parseMessage(email.message)
-		res.render('viewemail', {email: email, message: message})
+		res.render('viewemail', {email: email, message: message || ''})
 	})
 })
 
 router.get('/logout', function(req, res) {
     req.session.destroy(function(){
-        res.redirect('/')
+        return res.redirect('/')
     })
 });
+
+var getObjects = function(id, cbk) {
+	var obj = {}
+	async.waterfall([
+	    function(cbk1){
+	    	contact.findAllByOwnerId(id, function(err, contacts) {
+	    		obj.contacts = contacts;
+	    		cbk1(err)
+	    	})
+	    },
+	    function(cbk2){
+		    template.findAllByOwnerId(id, function(err, templates) {
+		    	obj.templates = templates
+		    	cbk2(err)
+		    })
+	    },
+	    function(cbk3){
+	        email.findAllBySenderId(id, function(err, emails) {
+	        	obj.emails = emails
+	        	cbk3(err)
+	        })
+	    }
+	], function (err) {
+		return cbk(err, obj)
+	});	
+}
 
 module.exports = router;

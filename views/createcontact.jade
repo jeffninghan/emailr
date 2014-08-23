@@ -1,6 +1,10 @@
 extends layout
  
 block content
+  if error
+    .alert.alert-danger
+      strong #{error.name}: #{error.message}
+      
   h1 Add Contact
   form(role='form' action='/methods/createContact' method='post' id='createContactForm')
     label(for='name') Name

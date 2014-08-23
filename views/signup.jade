@@ -4,7 +4,7 @@ block content
   h1 Sign Up
   if error
     .alert.alert-danger
-      strong Error: #{error}
+      strong #{error.name}: #{error.message}
 
   form(role='form' action='/signup' method='post' id='singupForm')
     label(for='name') Name

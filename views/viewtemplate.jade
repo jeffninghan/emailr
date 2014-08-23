@@ -1,77 +1,78 @@
 extends layout
 
 block content
+    if error
+        .alert.alert-danger
+            strong #{error.name}: #{error.message}
+    if template.interval.repeat
+        h1 #{template.name} 
+        a(class='btn btn-success') Active
+    else
+        h1 #{template.name} 
+        a(href='#' class='btn btn-danger') Inactive
+    p
+    if contacts.length
+        .well.well-sm
+            table.table.table-striped
+                h3 Contacts
+                thead
+                    tr
+                        th Name
+                        th Email
+                tbody
+                each contact in contacts
+                    tr
+                        td #{contact.name}
+                        td #{contact.email}
+    p
+
+    .well.well-sm
+        h3 Interval
+        p #{template.interval.interval}
+    p
+
+    .well.well-sm
+        table.table.table-striped
+            if template.messages.subjects.length
+                h3 Messages
+                thead
+                    tr
+                        th Subjects
+                tbody
+                each subject in template.messages.subjects
+                    tr
+                        td #{subject}
+        p
+        table.table.table-striped
+            if template.messages.greetings.length
+                thead
+                    tr
+                        th Greetings
+                tbody
+                each greeting in template.messages.greetings
+                    tr
+                        td #{greeting}
+        p
+        table.table.table-striped
+            if template.messages.messages.length
+                thead
+                    tr
+                        th Messages
+            tbody
+            each message in template.messages.messages
+                tr
+                    td #{message}
+        p
+        table.table.table-striped
+            if template.messages.signatures.length
+                thead
+                    tr
+                        th Signatures
+                tbody
+                each signature in template.messages.signatures
+                    tr
+                        td #{signature}
+        p
 
 
-	if template.interval.repeat
-		h1 #{template.name} 
-		a(class='btn btn-success') Active
-	else
-		h1 #{template.name} 
-		a(href='#' class='btn btn-danger') Inactive
-	p
-	if contacts.length
-		.well.well-sm
-			table.table.table-striped
-				h3 Contacts
-				thead
-					tr
-						th Name
-						th Email
-				tbody
-				each contact in contacts
-					tr
-						td #{contact.name}
-						td #{contact.email}
-	p
-
-	.well.well-sm
-		h3 Interval
-		p #{template.interval.interval}
-	p
-
-	.well.well-sm
-		table.table.table-striped
-			if template.messages.subjects.length
-				h3 Messages
-				thead
-					tr
-						th Subjects
-				tbody
-				each subject in template.messages.subjects
-					tr
-						td #{subject}
-		p
-		table.table.table-striped
-			if template.messages.greetings.length
-				thead
-					tr
-						th Greetings
-				tbody
-				each greeting in template.messages.greetings
-					tr
-						td #{greeting}
-		p
-		table.table.table-striped
-			if template.messages.messages.length
-				thead
-					tr
-						th Messages
-			tbody
-			each message in template.messages.messages
-				tr
-					td #{message}
-		p
-		table.table.table-striped
-			if template.messages.signatures.length
-				thead
-					tr
-						th Signatures
-				tbody
-				each signature in template.messages.signatures
-					tr
-						td #{signature}
-		p
-
-
-	a(href='/' class='btn btn-danger btnBack') Back
+    a(href='/' class='btn btn-danger btnBack') Back

@@ -14,8 +14,7 @@ var router = express.Router();
 //
 ///////////////////////////////////////////////////////////////////////////////
 router.post('/createTemplate', function(req, res) {
-	var id = req.session.account._id;
-	if (!id) { return res.redirect('/') }
+	var id = String(req.session.account._id);
 	var inputs = formatTemplateResponse(req.body)
 	var recipients = inputs.recipients
 	var name = inputs.name
@@ -51,7 +50,7 @@ router.post('/toggleTemplate/:templateId', function(req, res) {
 })
 
 router.post('/editTemplate/:templateId', function(req, res) {
-	var id = req.session.account._id;
+	var id = String(req.session.account._id);
 	var templateId = req.params.templateId;
 	var recipients = req.body.recipients
 	var name = req.body.name
@@ -75,8 +74,7 @@ router.post('/editTemplate/:templateId', function(req, res) {
 })
 
 router.post('/deleteTemplate/:templateId', function(req, res) {
-	var id = req.session.account._id;
-	if (!id) { return res.redirect('/') }
+	var id = String(req.session.account._id);
 	var templateId = req.params.templateId;
 	template.findOneById(templateId, function(err, template) {
 		if (err || !template || (template.owner._id != id)) {
@@ -97,8 +95,7 @@ router.post('/deleteTemplate/:templateId', function(req, res) {
 //
 ///////////////////////////////////////////////////////////////////////////////
 router.post('/createContact', function(req, res) {
-	var id = req.session.account._id;
-	if (!id) { return res.redirect('/') }
+	var id = String(req.session.account._id);
 	var name = req.body.name;
 	var email = req.body.email;
 	if (!name || !email) { 
@@ -121,8 +118,7 @@ router.post('/createContact', function(req, res) {
 })
 
 router.post('/deleteContact/:contactId', function(req, res) {
-	var id = req.session.account._id;
-	if (!id) { return res.redirect('/') }
+	var id = String(req.session.account._id);
 	var contactId = req.params.contactId
 	contact.findOneById(contactId, function(err, contact) {
 		if (err || !contact) {

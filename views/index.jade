@@ -69,5 +69,9 @@ block content
 						a(href='/viewEmail/' + email._id) #{email.recipient.name}
 					td #{email.subject}
 					td #{email.dateSent}
-
+			tr
+				td
+					a(href='/allEmail' class='label label-default') All Emails
+				td
+				td
 	a(href='/logout' class='btn btn-danger') Log out

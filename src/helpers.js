@@ -24,3 +24,17 @@ exports.decrypt = function(text) {
     var decrypted = decipher.update(text, 'hex', 'utf8') + decipher.final('utf8');
     return decrypted
 }
+
+exports.orderByAttribute = function(arr, attr, order) {
+    var direction = (order == 'asc') ? false : true
+    function compare(a,b) {
+        if (a[attr] < b[attr])
+            return (direction) ? -1 : 1;
+        if (a[attr] > b[attr])
+            return (direction) ? 1 : -1;
+        return 0;
+    }
+
+    arr.sort(compare);
+    return arr
+}

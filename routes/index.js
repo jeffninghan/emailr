@@ -7,20 +7,23 @@ var template = require('../src/repository/template');
 var helpers = require('../src/helpers');
 var async = require('async');
 
+// Constants
+const EMAIL_LIMIT = 10
 /* GET home page. */
 router.get('/', function(req, res) {
 	if (req.session.account) {
 		getObjects(String(req.session.account._id), function(err, obj) {
 			if (err) { return res.render('index', {error: {name: err.name, message: err.message}}) }
-			req.session.contacts = obj.contacts
+			req.session.contacts = helpers.orderByAttribute(obj.contacts, 'name', 'desc')
 			req.session.emails = obj.emails
-			req.session.templates = obj.templates
+			req.session.emails.reverse()
+			req.session.templates = helpers.orderByAttribute(obj.templates, 'name', 'desc')
 			return res.render('index', 
 				{	title: 'Emailr - all you need to keep up with friends', 
 					message:'Welcome back ' + req.session.account.name,
 					account: req.session.account,
 					contacts: req.session.contacts,
-					emails: req.session.emails,
+					emails: req.session.emails.slice(0, EMAIL_LIMIT),
 					templates: req.session.templates
 				}
 			)
@@ -53,6 +56,7 @@ router.post('/login', function(req, res) {
 				req.session.contacts = obj.contacts
 				req.session.templates = obj.templates
 				req.session.emails = obj.emails
+				req.session.emails.reverse()
 				return res.redirect('/') 
 
 			})		
@@ -139,6 +143,10 @@ router.get('/viewEmail/:emailId', function(req, res) {
 		var message = helpers.parseMessage(email.message)
 		res.render('viewemail', {email: email, message: message || ''})
 	})
+})
+
+router.get('/allEmail', function(req, res) {
+	return res.render('allemail', {emails: req.session.emails})
 })
 
 router.get('/logout', function(req, res) {

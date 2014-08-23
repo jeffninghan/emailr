@@ -1,0 +1,23 @@
+extends layout
+
+block content
+    if error
+        .alert.alert-danger
+            strong #{error.name}: #{error.message}
+    table.table.table-striped
+        h1 Sent Emails
+        if emails.length
+            thead
+                tr
+                    th Recipient
+                    th Subject
+                    th Date
+            tbody       
+            each email in emails
+                tr
+                    td 
+                        a(href='/viewEmail/' + email._id) #{email.recipient.name}
+                    td #{email.subject}
+                    td #{email.dateSent}
+
+        a(href='/' class="btn btn-default") Home

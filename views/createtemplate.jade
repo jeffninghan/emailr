@@ -3,17 +3,18 @@ extends layout
 block content
   h1 Create Template
   div.top
-    form.form-horizontal(action='/methods/createTemplate' method="post", id="createContactForm")
-      label Name
-      input.span3(id="name" type="text" name="name")
-      label Interval
-      select(name='interval')
+    form(role='form' action='/methods/createTemplate' method='post' id='createContactTemplate')
+      label(for='name') Name
+      input#name.form-control(placeholder="Name" type="text" name="name")
+      br
+      label(for='interval') Interval
+      select.form-control#interval(name='interval')
           option(value='hour') Hourly
           option(value='day') Daily
           option(value='week') Weekly
           option(value='month') Monthly
           option(value='year') Annually
-      p
+      br
       table.table.table-striped
         label Select Contacts
         thead
@@ -28,14 +29,18 @@ block content
             td #{contact.email}
             td 
               input(type='checkbox', checked=false, name= 'contactId-'+contact._id) 
-      label Subjects
-      input.span3(id="subjects" type="text" name="subjects")
-      label Greetings
-      input.span3(id="greetings" type="text" name="greetings")
-      label Messages
-      input.span3(id="messages" type="text" name="messages")
-      label Signatures
-      input.span3(id="signatures" type="text" name="signatures")
-      p
-      input.btn(type="submit" value="Create")
+      br
+      label(for='subjects') Subjects
+      input#subjects.form-control(placeholder="Comma separated list of subjects" type="text" name="subjects")
+      br
+      label(for='greetings') Greetings
+      input#greetings.form-control(placeholder="Comma separated list of greetings" type="text" name="greetings")
+      br
+      label(for='messages') Messages
+      input#messages.form-control(placeholder="Comma separated list of messages" type="text" name="messages")
+      br
+      label(for='signatures') Signatures
+      input#signatures.form-control(placeholder="Comma separated list of signatures" type="text" name="signatures")
+      br
+      button.btn.btn-default(type="submit") Create
       a(href='/' class='btn btn-danger') Back

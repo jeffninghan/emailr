@@ -7,12 +7,12 @@ block content
 		h1 #{template.name} 
 		a(class='btn btn-success') Active
 	else
-			h1 #{template.name} 
-			a(href='#' class='btn btn-danger') Inactive
+		h1 #{template.name} 
+		a(href='#' class='btn btn-danger') Inactive
 	p
-	.well.well-sm
-		table.table.table-striped
-			if contacts.length
+	if contacts.length
+		.well.well-sm
+			table.table.table-striped
 				h3 Contacts
 				thead
 					tr

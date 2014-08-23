@@ -2,19 +2,19 @@ extends layout
  
 block content
   h1 Sign Up
-  div.top
-    if error
-      .alert.alert-error
-        strong Error: #{error}
-    form.form-horizontal(action='/signup' method="post", id="signupForm")
-      label Name
-      input.span3(id="name", type="text", name="name")
-      label Email
-      input.span3(id="email", type="text", name="email")
-      label Password
-      input.span3(id="password", type="password", name="password")
-      input.btn(type="submit", value="Sign Up")
+  if error
+    .alert.alert-danger
+      strong Error: #{error}
+
+  form(role='form' action='/signup' method='post' id='singupForm')
+    label(for='name') Name
+    input#name.form-control(placeholder='Name', type='text', name='name')
+    br
+    label(for='email') Email address
+    input#email.form-control(placeholder='Enter email', name='email')
+    br
+    label(for='password') Password
+    input#password.form-control(type='password', placeholder='Password',name='password')
+    br
+    button.btn.btn-default(type='submit') Sign Up
     a(href='/' class='btn btn-danger') Back
-  div.footer
-
-

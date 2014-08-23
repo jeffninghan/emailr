@@ -1,14 +1,17 @@
 extends layout
  
 block content
-  h1 Emailr
-  div.top
-    form.form-horizontal(action='/login' method="post", id="loginForm")
-      label Email
-      input.span3(id="email", type="text", name="email")
-      label Password
-      input.span3(id="password", type="password", name="password")
-      input.btn(type="submit", value="Log In")
-  div.container
-  a(href='/signup') No account? Sign up!
-  div.footer
+  h1
+    | Emailr 
+    span.glyphicon.glyphicon-envelope
+  br
+  form(role='form' action='/login' method='post' id='loginForm')
+    label(for='email') Email address
+    input#email.form-control(placeholder='Enter email', name='email')
+    br
+    label(for='password') Password
+    input#password.form-control(type='password', placeholder='Password',name='password')
+    br
+    button.btn.btn-default(type='submit') Log In
+  br
+  a(href='/signup') No account? Sign up! 

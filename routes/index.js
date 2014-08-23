@@ -75,21 +75,34 @@ router.get('/signup', function(req, res) {
 	res.render('signup')
 })
 
+var checkEmailFormat = function(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
 //x-www-form-urlencoded data
 router.post('/signup', function(req, res) {
 	var name = req.body.name;
 	var email = req.body.email;
 	var password = req.body.password;  // this is hashed!!
 	password = encrypt(password);
-	account.create(email, password, name, function(err, account) {
-		if (err || !account) {
-			return res.send(err)
+	if (!checkEmailFormat(email)) {
+		return res.render('signup', {error: 'Invalid email'})
+	}
+	account.findOneByEmail(email, function(err, a) {
+		if (a) {
+			return res.render('signup', {error: 'Email already in use'})
 		}
-		req.session.account = account
-		req.session.contacts = []
-		req.session.emails = []
-		req.session.templates = []
-		res.redirect('/')
+		account.create(email, password, name, function(err, account) {
+			if (err || !account) {
+				return res.send(err)
+			}
+			req.session.account = account
+			req.session.contacts = []
+			req.session.emails = []
+			req.session.templates = []
+			res.redirect('/')
+		})
 	})
 })
 

@@ -3,6 +3,9 @@ extends layout
 block content
   h1 Sign Up
   div.top
+    if error
+      .alert.alert-error
+        strong Error: #{error}
     form.form-horizontal(action='/signup' method="post", id="signupForm")
       label Name
       input.span3(id="name", type="text", name="name")

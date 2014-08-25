@@ -7,11 +7,11 @@ The public DNS for this automatic emailing service is:
 
 http://ec2-54-187-209-80.us-west-2.compute.amazonaws.com/
 
-If I decide to further develop the service, I will get a better DNS. But this EC2 domain will have to do for now :/
+If I decide to further develop the service, I will get a better domain name. But this EC2 domain will have to do for now :/
 
 ###Get Started!
 
-Navigate to this address and get started! Login with an existing account or create a new account with your email and password. Note: the password must match the password used to login to your email, otherwise, the service cannot send emails from your account. I know this may seem sketchy but all the passwords are encrypted in the database and 
+Navigate to this address and get started! Login with an existing account or create a new account with your email and password. Note: the password must match the password used to login to your email, otherwise, the service cannot send emails from your account. I know this may seem sketchy but all the passwords are encrypted before storing in the mongo database so they will can never be seen in plain text. 
 
 Add contacts and then create templates for automatic emailing. Don't forget to activate templates after creation to sending mail.
 
@@ -88,3 +88,5 @@ $npm start
 ```
 
 while in the /emailr folder. Point a browser to localhost:3000 and start emailing! You still need to create an account with an email corresponding email password but at least you can control how that sensitive data is handled.
+
+Finally, Twitter Bootstrap FTW!
